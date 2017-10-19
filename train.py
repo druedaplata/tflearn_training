@@ -107,7 +107,7 @@ def train_cnn(train_df, test_df, num_classes):
     test_x, test_y = h5f_test['X'], h5f_test['Y']
 
     # Create model on Alexnet network
-    model_cnn = tflearn.DNN(getAlexnet(num_classes), tensorboard_verbose=0)
+    model_cnn = tflearn.DNN(getAlexnet(num_classes), tensorboard_verbose=0, tensorboard_dir="logs")
 
     # Train model on Alexnet network
     model_cnn.fit(train_x, train_y, validation_set=(test_x, test_y), n_epoch=200, shuffle=True,
@@ -125,7 +125,7 @@ def train_cnn_vgg(train_df, test_df, num_classes):
     #df_height, df_width = train_df.shape
     #num_features = df_width - 1
 
-    model_vgg = tflearn.DNN(getVGG(num_classes), tensorboard_verbose=0)
+    model_vgg = tflearn.DNN(getVGG(num_classes), tensorboard_verbose=0, tensorboard_dir="logs")
 
     # Load weights
     model_vgg.load('vgg16.tflearn', weights_only=True)
@@ -151,7 +151,7 @@ def train_lstm(train_df, test_df, num_classes):
     test_x = np.reshape(test_x, (-1, 1, num_features))
     test_y = to_categorical([y-1 for y in test_df[0].values.tolist()], num_classes)
 
-    model_lstm = tflearn.DNN(getLSTM(num_classes, num_features), tensorboard_verbose=0)
+    model_lstm = tflearn.DNN(getLSTM(num_classes, num_features), tensorboard_verbose=0, tensorboard_dir="logs")
 
     model_lstm.fit(train_x, train_y, n_epoch=200, validation_set=(test_x, test_y),
         show_metric=True, batch_size=16, run_id='lstm')
