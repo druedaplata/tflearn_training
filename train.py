@@ -55,7 +55,8 @@ def getAlexnet(num_classes, num_features=224):
 
 def getLSTM(num_classes, num_features):
     network = input_data([None, 1, num_features])
-    network = lstm(network, 256, dropout=0.8)
+    network = lstm(network, 256, dropout=0.8, return_seq=True)
+    network = lstm(network, 256)
     network = fully_connected(network, num_classes, activation='softmax')
     network = regression(network, optimizer='adam', learning_rate=0.01, loss='categorical_crossentropy')
     return network
@@ -110,8 +111,8 @@ def train_cnn(train_df, test_df, num_classes):
     model_cnn = tflearn.DNN(getAlexnet(num_classes), tensorboard_verbose=0, tensorboard_dir="logs")
 
     # Train model on Alexnet network
-    model_cnn.fit(train_x, train_y, validation_set=(test_x, test_y), n_epoch=200, shuffle=True,
-          show_metric=True, batch_size=96, run_id='cnn')
+    model_cnn.fit(train_x, train_y, validation_set=(test_x, test_y), n_epoch=50, shuffle=True,
+          show_metric=True, batch_size=16, run_id='eqk_cnn')
 
 
 def train_cnn_vgg(train_df, test_df, num_classes):
@@ -132,7 +133,7 @@ def train_cnn_vgg(train_df, test_df, num_classes):
 
     # Start Finetuning
     model_vgg.fit(train_x, train_y, n_epoch=10, validation_set=(test_x, test_y), shuffle=True,
-            show_metric=True, batch_size=16, run_id='vgg_finetune')
+            show_metric=True, batch_size=16, run_id='eqk_vgg')
 
 
 
@@ -153,8 +154,8 @@ def train_lstm(train_df, test_df, num_classes):
 
     model_lstm = tflearn.DNN(getLSTM(num_classes, num_features), tensorboard_verbose=0, tensorboard_dir="logs")
 
-    model_lstm.fit(train_x, train_y, n_epoch=200, validation_set=(test_x, test_y),
-        show_metric=True, batch_size=16, run_id='lstm')
+    model_lstm.fit(train_x, train_y, n_epoch=50, validation_set=(test_x, test_y),
+        show_metric=True, batch_size=16, run_id='eqk_lstm')
 
 def countClasses(dataframe):
     word_dict = {}
